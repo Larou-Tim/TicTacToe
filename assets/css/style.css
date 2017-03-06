@@ -1,0 +1,34 @@
+body {
+	font-family: 'Arial', sans-serif;
+}
+
+.well {
+	background-color: #375a7f;
+	font-size: 150%;
+	width: 75px;
+	height: 75px;
+	margin-left: 10px; 
+	margin-right: 10px; 
+}
+
+.well:hover {
+	background-color: #d3d3d3;
+	color:#375a7f;
+}
+
+.jumbotron {
+	padding: 25px 0 25px;
+	height: 375px;
+	width: 375px;
+	position: relative;
+}
+
+#alert-place {
+  position: absolute;
+	/*bottom: 20px;*/
+	/*left: 25px;*/
+}
+
+#reset-btn {
+	margin-left: 100px;
+}
