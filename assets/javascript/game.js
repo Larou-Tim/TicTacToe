@@ -13,13 +13,13 @@
     
     var xY;
     // var gameBoard = [0,1,2,3,4,5,6,7,8,9];
-    var allSpots = ["Top-L", "Top-C", "Top-R", "Mid-L", "Mid-C", "Mid-R", "Bot-L", "Bot-C", "Bot-R"]
+  
     var player;
     var emptySpot = true;
 
     var curPlayer = "X"
 
-var gameBoard= {
+var gameBoard = {
     "topL" : "",
     "topC" : "",
     "topR" : "", 
@@ -32,8 +32,6 @@ var gameBoard= {
 }
 
     $(".well").on("click",function() {
-
-      // checkSpot($(this).attr("id"));
       
        if ($(this).text() == "") {
 // main loop to assign piece and check winner
@@ -88,7 +86,7 @@ function createAlert() {
 //' <strong>Well done!</strong> Player ' + player +' Wins! <a href="#" class="alert-link" onclick="resetBoard()">Reset?</a>'
   var alertHolder = $("<div>");
   alertHolder.attr("class", "alert lert-dismissible alert-warning");
-  alertHolder.text("<strong> Well done! </strong> Player " + player + " Wins!");
+  alertHolder.text("Well done! Player " + player + " Wins! ");
   var alertButton = $("<button>");
   alertButton.attr("class", "close");
   alertButton.attr("type","button");
@@ -98,20 +96,33 @@ function createAlert() {
   var alertReset = $("<a>");
   alertReset.attr("class", "alert-link");
   alertReset.attr("onclick","resetBoard()");
-  alertReset.text("Reset?");
+  alertReset.text("Reset board?");
   alertHolder.append(alertReset);
+  $("#alert-place").append(alertHolder);
 
 
 }
 
 function resetBoard() {
-  turn = 2;
-  gameBoard = [0,1,2,3,4,5,6,7,8,9];
-  emptySpot = true;
+  curPlayer = 'X';
+  gameBoard = {
+    "topL" : "",
+    "topC" : "",
+    "topR" : "", 
+    "midL" : "", 
+    "midC" : "", 
+    "midR" : "", 
+    "botL" : "", 
+    "botC" : "", 
+    "botR" : ""
+
+  }
+
+    var allSpots = ["topL", "topC", "topR", "midL", "midC", "midR", "botL", "botC", "botR"]
 
     for (var i = 0; i < allSpots.length; i++){
-      document.getElementById(allSpots[i]).innerHTML = "";
+      $("#" + allSpots[i]).text("");
     }
     
-    document.getElementById('alert-place').innerHTML = "";
+    $('#alert-place').empty();
 }
