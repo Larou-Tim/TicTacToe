@@ -1,92 +1,93 @@
- // var config = {
- //    apiKey: "AIzaSyBCOx7LKB6MvDLnwJsz-ZNrnT-MyFTEUgI",
- //    authDomain: "spark-tictac.firebaseapp.com",
- //    databaseURL: "https://spark-tictac.firebaseio.com",
- //    storageBucket: "spark-tictac.appspot.com",
- //    messagingSenderId: "247801094701"
- //  };
- //  firebase.initializeApp(config);
+var config = {
+  apiKey: "AIzaSyBCOx7LKB6MvDLnwJsz-ZNrnT-MyFTEUgI",
+  authDomain: "spark-tictac.firebaseapp.com",
+  databaseURL: "https://spark-tictac.firebaseio.com",
+  storageBucket: "spark-tictac.appspot.com",
+  messagingSenderId: "247801094701"
+};
+
+firebase.initializeApp(config);
     
-
- //    var database = database.firebase();
-
-    
-    var xY;
-    // var gameBoard = [0,1,2,3,4,5,6,7,8,9];
-  
-    var player;
-    var emptySpot = true;
-
-    var curPlayer = "X"
-
+var database = firebase.database();
+var allSpots = ["topL", "topC", "topR", "midL", "midC", "midR", "botL", "botC", "botR"]
+var curPlayer = "X"
 var gameBoard = {
-    "topL" : "",
-    "topC" : "",
-    "topR" : "", 
-    "midL" : "", 
-    "midC" : "", 
-    "midR" : "", 
-    "botL" : "", 
-    "botC" : "", 
-    "botR" : ""
+  "topL" : "", "topC" : "", "topR" : "", 
+  "midL" : "", "midC" : "", "midR" : "", 
+  "botL" : "", "botC" : "", "botR" : ""
 }
 
-    $(".well").on("click",function() {
-      
-       if ($(this).text() == "") {
-// main loop to assign piece and check winner
-   
-          $(this).text(curPlayer);
-          gameBoard[$(this).attr("id")] = curPlayer;
-          console.log(gameBoard);
-          winCheck(curPlayer);
-
-          if (curPlayer == "X") {
-            curPlayer = "O";
-          }
-          else {
-            curPlayer = "X";
-          }
-        }
+database.ref().on("value", function(snapshot) {
+      gameBoard = snapshot.val().board;
+      curPlayer = snapshot.val().player;
+      drawBoard();
+    }, function(errorObject) {
+      console.log("The read failed: " + errorObject.code);
     });
 
 
-  function winCheck(piece) {
- 
-    if (gameBoard.topL == piece && gameBoard.topC == piece && gameBoard.topR == piece) {
-      createAlert();
+$(".well").on("click",function() {
+      
+  if ($(this).text() == "") {
+    gameBoard[$(this).attr("id")] = curPlayer;
+    drawBoard();
+    winCheck(curPlayer);
+
+    if (curPlayer == "X") {
+      curPlayer = "O";
     }
-    else if (gameBoard.midL == piece && gameBoard.midC == piece && gameBoard.midR == piece) { 
-        createAlert();
-    }
-     else if (gameBoard.botL == piece && gameBoard.botC == piece && gameBoard.botR == piece) { 
-        createAlert();
-    }
-    else if (gameBoard.topL == piece && gameBoard.midL == piece && gameBoard.botL == piece) { 
-      createAlert();
-    }
-    else if (gameBoard.topC == piece && gameBoard.midC == piece && gameBoard.botC == piece) { 
-      createAlert();
-    }
-    else if (gameBoard.topR == piece && gameBoard.midR == piece && gameBoard.botR == piece) { 
-      createAlert();
-    }
-    else if (gameBoard.topL == piece && gameBoard.midC == piece && gameBoard.botR == piece) { 
-      createAlert();
-    }
-    else if (gameBoard.topR == piece && gameBoard.midC == piece && gameBoard.botL == piece) { 
-      createAlert();
+    else {
+      curPlayer = "X";
     }
   }
 
+  database.ref().set({
+        board: gameBoard,
+        player: curPlayer,
+  });
+
+});
+
+function drawBoard() {
+  for (var i = 0; i < allSpots.length; i++){
+      $("#" + allSpots[i]).text(gameBoard[allSpots[i]]);
+    }
+}
+
+function winCheck(piece) {
+ 
+  if (gameBoard.topL == piece && gameBoard.topC == piece && gameBoard.topR == piece) {
+    createAlert();
+  }
+  else if (gameBoard.midL == piece && gameBoard.midC == piece && gameBoard.midR == piece) { 
+      createAlert();
+  }
+   else if (gameBoard.botL == piece && gameBoard.botC == piece && gameBoard.botR == piece) { 
+      createAlert();
+  }
+  else if (gameBoard.topL == piece && gameBoard.midL == piece && gameBoard.botL == piece) { 
+    createAlert();
+  }
+  else if (gameBoard.topC == piece && gameBoard.midC == piece && gameBoard.botC == piece) { 
+    createAlert();
+  }
+  else if (gameBoard.topR == piece && gameBoard.midR == piece && gameBoard.botR == piece) { 
+    createAlert();
+  }
+  else if (gameBoard.topL == piece && gameBoard.midC == piece && gameBoard.botR == piece) { 
+    createAlert();
+  }
+  else if (gameBoard.topR == piece && gameBoard.midC == piece && gameBoard.botL == piece) { 
+    createAlert();
+  }
+}
+
     
 function createAlert() {
-  // document.getElementById('alert-place').innerHTML = '<div class="alert alert-dismissible alert-warning fade in"> <button type="button" class="close" data-dismiss="alert">&times;</button> <strong>Well done!</strong> Player ' + player +' Wins! <a href="#" class="alert-link" onclick="resetBoard()">Reset?</a>'
-  console.log( "winner winner");
-//' <strong>Well done!</strong> Player ' + player +' Wins! <a href="#" class="alert-link" onclick="resetBoard()">Reset?</a>'
+
   var alertHolder = $("<div>");
   alertHolder.attr("class", "alert lert-dismissible alert-warning");
-  alertHolder.text("Well done! Player " + player + " Wins! ");
+  alertHolder.text("Well done! Player " + curPlayer + " Wins! ");
   var alertButton = $("<button>");
   alertButton.attr("class", "close");
   alertButton.attr("type","button");
@@ -99,7 +100,6 @@ function createAlert() {
   alertReset.text("Reset board?");
   alertHolder.append(alertReset);
   $("#alert-place").append(alertHolder);
-
 
 }
 
@@ -117,12 +117,11 @@ function resetBoard() {
     "botR" : ""
 
   }
+  drawBoard();  
+   $('#alert-place').empty();
 
-    var allSpots = ["topL", "topC", "topR", "midL", "midC", "midR", "botL", "botC", "botR"]
-
-    for (var i = 0; i < allSpots.length; i++){
-      $("#" + allSpots[i]).text("");
-    }
-    
-    $('#alert-place').empty();
+  database.ref().set({
+    board: gameBoard,
+    player: curPlayer,
+  });
 }
