@@ -21,6 +21,7 @@ database.ref().on("value", function(snapshot) {
       gameBoard = snapshot.val().board;
       curPlayer = snapshot.val().player;
       drawBoard();
+      winCheck(curPlayer);
     }, function(errorObject) {
       console.log("The read failed: " + errorObject.code);
     });
@@ -30,7 +31,7 @@ $(".well").on("click",function() {
       
   if ($(this).text() == "") {
     gameBoard[$(this).attr("id")] = curPlayer;
-    drawBoard();
+  
     winCheck(curPlayer);
 
     if (curPlayer == "X") {
@@ -117,7 +118,7 @@ function resetBoard() {
     "botR" : ""
 
   }
-  drawBoard();  
+    
    $('#alert-place').empty();
 
   database.ref().set({
